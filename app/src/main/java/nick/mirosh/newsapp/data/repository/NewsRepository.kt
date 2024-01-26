@@ -1,7 +1,7 @@
 package nick.mirosh.newsapp.data.repository
 
 import kotlinx.coroutines.flow.StateFlow
-import nick.mirosh.newsapp.entity.Article
+import nick.mirosh.newsapp.domain.model.Article
 
 interface NewsRepository {
 

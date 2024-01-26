@@ -5,11 +5,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
-import nick.mirosh.newsapp.database.ArticleDao
-import nick.mirosh.newsapp.entity.Article
-import nick.mirosh.newsapp.entity.asDatabaseArticle
-import nick.mirosh.newsapp.entity.asDatabaseModel
-import nick.mirosh.newsapp.entity.asDomainModel
+import nick.mirosh.newsapp.data.database.ArticleDao
+import nick.mirosh.newsapp.domain.model.Article
+import nick.mirosh.newsapp.data.model.asDatabaseArticle
+import nick.mirosh.newsapp.domain.model.asDatabaseModel
+import nick.mirosh.newsapp.data.model.asDomainModel
 import javax.inject.Inject
 
 class NewsRepositoryImpl @Inject constructor(

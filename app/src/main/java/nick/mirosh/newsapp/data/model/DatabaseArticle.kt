@@ -1,8 +1,9 @@
-package nick.mirosh.newsapp.entity
+package nick.mirosh.newsapp.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import nick.mirosh.newsapp.domain.model.Article
 
 @Entity(tableName = "articles")
 data class DatabaseArticle(

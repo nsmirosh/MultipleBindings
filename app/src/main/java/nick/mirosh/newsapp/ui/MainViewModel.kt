@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import nick.mirosh.newsapp.data.repository.NewsRepository
 import nick.mirosh.newsapp.di.Universal
-import nick.mirosh.newsapp.entity.Article
+import nick.mirosh.newsapp.domain.model.Article
 import javax.inject.Inject
 
 @HiltViewModel
