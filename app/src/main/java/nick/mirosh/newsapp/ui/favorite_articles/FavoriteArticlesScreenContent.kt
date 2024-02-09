@@ -19,53 +19,68 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import nick.mirosh.newsapp.domain.model.Article
 
 @Composable
 fun FavoriteArticlesScreenContent(
     modifier: Modifier = Modifier,
     viewModel: FavoriteArticlesViewModel,
 ) {
-    val articles by viewModel.articles.collectAsStateWithLifecycle(listOf())
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (articles.isNotEmpty()) {
+    when (uiState) {
+        is FavoriteArticlesUIState.Success -> {
+            val articles = (uiState as FavoriteArticlesUIState.Success).articles
+            FavoriteArticlesList(
+                articles
+            )
+        }
 
-        LazyColumn {
-
-            items(articles.size) { index ->
-                val article = articles[index]
-                Row(
-                    modifier = Modifier.padding(8.dp, 4.dp, 8.dp, 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AsyncImage(
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier
-                            .height(150.dp)
-                            .padding(8.dp)
-                            .width(200.dp)
-                            .clip(shape = RoundedCornerShape(8.dp)),
-
-                        model = article.urlToImage,
-                        contentDescription = "Translated description of what the image contains"
-                    )
-                    Text(
-                        text = article.title,
-                        lineHeight = 18.sp,
-                        fontSize = 14.sp
-
-                    )
-                }
+        is FavoriteArticlesUIState.Empty -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No saved articles",
+                    fontSize = 24.sp,
+                )
             }
         }
-    } else {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "No saved articles",
-                fontSize = 24.sp,
-            )
+    }
+}
+
+
+@Composable
+fun FavoriteArticlesList(
+    articles: List<Article>
+) {
+
+    LazyColumn {
+        items(articles.size) { index ->
+            val article = articles[index]
+            Row(
+                modifier = Modifier.padding(8.dp, 4.dp, 8.dp, 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier
+                        .height(150.dp)
+                        .padding(8.dp)
+                        .width(200.dp)
+                        .clip(shape = RoundedCornerShape(8.dp)),
+
+                    model = article.urlToImage,
+                    contentDescription = "Translated description of what the image contains"
+                )
+                Text(
+                    text = article.title,
+                    lineHeight = 18.sp,
+                    fontSize = 14.sp
+
+                )
+            }
         }
     }
 }

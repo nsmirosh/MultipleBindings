@@ -40,7 +40,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import nick.mirosh.newsapp.R
 import nick.mirosh.newsapp.domain.model.Article
-import nick.mirosh.newsapp.ui.MainViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -52,32 +51,47 @@ fun MainScreenContent(
     onClick: (Article) -> Unit,
     onSavedArticlesClicked: () -> Unit
 ) {
-    val articles by viewModel.articles.collectAsStateWithLifecycle(listOf())
+    val uiState by viewModel.articles.collectAsStateWithLifecycle()
 
-    Scaffold(
-        content = {
-            LazyColumn {
-                items(articles.size) { index ->
-                    ArticleItem(articles[index], onClick, viewModel::onLikeClick)
-                }
-            }
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onSavedArticlesClicked,
-                modifier = Modifier.padding(bottom = 16.dp, end = 16.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(32.dp),
-                    imageVector = ImageVector.vectorResource(id = R.drawable.save),
-                    contentDescription = "Save"
+    when (uiState) {
+        is ArticlesUiState.Success -> {
+            val articles = (uiState as ArticlesUiState.Success).articles
+            Scaffold(
+                content = {
+                    LazyColumn {
+                        items(articles.size) { index ->
+                            ArticleItem(articles[index], onClick, viewModel::onLikeClick)
+                        }
+                    }
+                },
+                floatingActionButton = {
+                    FloatingActionButton(
+                        onClick = onSavedArticlesClicked,
+                        modifier = Modifier.padding(bottom = 16.dp, end = 16.dp)
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(32.dp),
+                            imageVector = ImageVector.vectorResource(id = R.drawable.save),
+                            contentDescription = "Save"
+                        )
+                    }
+                },
+
+                floatingActionButtonPosition = FabPosition.End,
+
                 )
-            }
-        },
 
-        floatingActionButtonPosition = FabPosition.End,
+        }
 
-        )
+        is ArticlesUiState.Error -> {
+
+        }
+
+        is ArticlesUiState.Loading -> {
+
+        }
+    }
+
 }
 
 @Composable

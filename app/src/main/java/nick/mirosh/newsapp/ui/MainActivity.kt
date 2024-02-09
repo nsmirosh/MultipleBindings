@@ -17,6 +17,7 @@ import nick.mirosh.newsapp.ui.details.DetailsScreenContent
 import nick.mirosh.newsapp.ui.favorite_articles.FavoriteArticlesScreenContent
 import nick.mirosh.newsapp.ui.favorite_articles.FavoriteArticlesViewModel
 import nick.mirosh.newsapp.ui.feed.MainScreenContent
+import nick.mirosh.newsapp.ui.feed.MainViewModel
 import nick.mirosh.newsapp.ui.theme.NewsAppTheme
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
