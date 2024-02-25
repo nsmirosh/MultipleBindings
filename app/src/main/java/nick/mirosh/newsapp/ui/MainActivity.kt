@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -24,14 +23,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.wear.compose.material.ContentAlpha
 import dagger.hilt.android.AndroidEntryPoint
+import nick.mirosh.newsapp.ui.details.DetailsScreenContent
 import nick.mirosh.newsapp.ui.favorite_articles.FavoriteArticlesScreenContent
 import nick.mirosh.newsapp.ui.favorite_articles.FavoriteArticlesViewModel
 import nick.mirosh.newsapp.ui.feed.MainScreenContent
@@ -87,9 +85,9 @@ fun BottomBar(navController: NavController) {
 }
 
 sealed class BottomBarItem(var title: String, var icon: ImageVector, var route: String) {
-    data object Home : BottomBarItem("Home", Icons.Default.Home, Feed.route)
+    data object Home : BottomBarItem("Home", Icons.Default.Home, FeedDestination.route)
     data object Favorites :
-        BottomBarItem("Favorites", Icons.Default.Favorite, Details.routeWithArgs)
+        BottomBarItem("Favorites", Icons.Default.Favorite, FavoritesDestination.route)
 }
 
 @Composable
@@ -125,24 +123,33 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 @Composable
 fun BottomNavGraph(paddingValues: PaddingValues, navController: NavHostController) {
     NavHost(navController = navController, startDestination = BottomBarItem.Home.route) {
-        composable(route = BottomBarItem.Home.route) {
+        composable(route = FeedDestination.route) {
             MainScreenContent(
                 modifier = Modifier.padding(paddingValues),
                 viewModel = hiltViewModel<MainViewModel>(),
                 onClick = {
                     val encodedUrl =
                         URLEncoder.encode(it.url, StandardCharsets.UTF_8.toString())
-                    navController.navigateSingleTopTo("${Details.route}/$encodedUrl")
+                    navController.navigateSingleTopTo("${DetailsDestination.route}/$encodedUrl")
 
                 }
             )
         }
-        composable(route = BottomBarItem.Favorites.route) {
+        composable(route = FavoritesDestination.route) {
             val viewModel = hiltViewModel<FavoriteArticlesViewModel>()
             FavoriteArticlesScreenContent(
                 modifier = Modifier.padding(paddingValues),
                 viewModel = viewModel
             )
+        }
+        composable(
+            route = DetailsDestination.routeWithArgs,
+            arguments = DetailsDestination.arguments
+        ) {
+            val articleUrl =
+                it.arguments?.getString(DetailsDestination.articleArg)
+
+            DetailsScreenContent(articleUrl = articleUrl.orEmpty())
         }
     }
 }

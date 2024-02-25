@@ -29,11 +29,15 @@ interface NewsDestinations {
 /**
  * Rally app navigation destinations
  */
-object Feed : NewsDestinations {
+object FeedDestination : NewsDestinations {
     override val route = "feed"
 }
 
-object Details : NewsDestinations {
+object FavoritesDestination : NewsDestinations {
+    override val route = "favorites"
+}
+
+object DetailsDestination : NewsDestinations {
     override val route = "details"
     const val articleArg = "article"
     val routeWithArgs = "${route}/{${articleArg}}"
