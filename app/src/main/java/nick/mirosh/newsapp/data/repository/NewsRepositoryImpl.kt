@@ -11,6 +11,7 @@ import nick.mirosh.newsapp.data.model.asDomainModel
 import nick.mirosh.newsapp.domain.Result
 import nick.mirosh.newsapp.domain.model.Article
 import nick.mirosh.newsapp.domain.model.asDatabaseModel
+import nick.mirosh.newsapp.domain.repository.NewsRepository
 import java.io.IOException
 import javax.inject.Inject
 
@@ -18,10 +19,10 @@ private const val TAG = "NewsRepositoryImpl"
 
 class NewsRepositoryImpl @Inject constructor(
     private val newsDataSource: NewsRemoteDataSource? = null,
-    private val articleDao: ArticleDao
+    private val articleDao: ArticleDao,
 ) : NewsRepository {
 
-    override suspend fun getNews(country: String): Flow<Result<List<Article>>> = flow {
+    override fun getNews(country: String): Flow<Result<List<Article>>> = flow {
         try {
             //implement polling every 10 seconds here
             val articles = newsDataSource?.getHeadlines(country) ?: emptyList()

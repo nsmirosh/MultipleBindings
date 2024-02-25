@@ -6,10 +6,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import nick.mirosh.newsapp.data.repository.NewsRepository
 import nick.mirosh.newsapp.di.Cache
 import nick.mirosh.newsapp.domain.Result
 import nick.mirosh.newsapp.domain.model.Article
+import nick.mirosh.newsapp.domain.repository.NewsRepository
 import javax.inject.Inject
 
 @HiltViewModel

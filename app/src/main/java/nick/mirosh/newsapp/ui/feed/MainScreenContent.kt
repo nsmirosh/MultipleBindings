@@ -38,6 +38,7 @@ import coil.compose.AsyncImage
 import nick.mirosh.newsapp.domain.model.Article
 
 
+private const val TAG = "MainScreenContent"
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,7 +47,10 @@ fun MainScreenContent(
     viewModel: MainViewModel = viewModel(),
     onClick: (Article) -> Unit
 ) {
-    val uiState by viewModel.newsFeedUiState.collectAsStateWithLifecycle()
+    Log.d(TAG, "MainScreenContent initialized ")
+    val uiState by viewModel.newsFeedUiState.collectAsStateWithLifecycle(
+        initialValue = ArticlesUiState.Loading
+    )
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) {

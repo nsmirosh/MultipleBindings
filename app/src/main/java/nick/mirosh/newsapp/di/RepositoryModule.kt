@@ -5,10 +5,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import nick.mirosh.newsapp.data.repository.NewsRemoteDataSource
-import nick.mirosh.newsapp.data.repository.NewsRepository
-import nick.mirosh.newsapp.data.repository.NewsRepositoryImpl
 import nick.mirosh.newsapp.data.database.ArticleDao
+import nick.mirosh.newsapp.data.repository.NewsRemoteDataSource
+import nick.mirosh.newsapp.data.repository.NewsRepositoryImpl
+import nick.mirosh.newsapp.domain.repository.NewsRepository
 
 @Module
 @InstallIn(ViewModelComponent::class)
