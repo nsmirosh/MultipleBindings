@@ -1,5 +1,6 @@
 package nick.mirosh.newsapp.data.repository
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -10,25 +11,37 @@ import nick.mirosh.newsapp.data.model.asDomainModel
 import nick.mirosh.newsapp.domain.Result
 import nick.mirosh.newsapp.domain.model.Article
 import nick.mirosh.newsapp.domain.model.asDatabaseModel
+import java.io.IOException
 import javax.inject.Inject
+
+private const val TAG = "NewsRepositoryImpl"
 
 class NewsRepositoryImpl @Inject constructor(
     private val newsDataSource: NewsRemoteDataSource? = null,
     private val articleDao: ArticleDao
 ) : NewsRepository {
 
-    override suspend fun refreshNews(): Flow<Result<List<Article>>> = flow<Result<List<Article>>> {
+    override suspend fun getNews(country: String): Flow<Result<List<Article>>> = flow {
         try {
-            val articles = newsDataSource?.getHeadlines() ?: emptyList()
-            if (articles.isNotEmpty()) {
-                articleDao.insertAll(articles.map {
-                    it.asDatabaseArticle()
-                })
-            }
+            //implement polling every 10 seconds here
+            val articles = newsDataSource?.getHeadlines(country) ?: emptyList()
+            articleDao.insertAll(articles.map {
+                it.asDatabaseArticle()
+            })
+        } catch (e: IOException) {
+            Log.d(TAG, "getNews: ${e.message}")
         } finally {
-            emit(Result.Success(articleDao.getAllArticles().map {
-                it.asDomainModel()
-            }))
+            articleDao.getAllArticles().also { databaseArticles ->
+                if (databaseArticles.isNotEmpty()) {
+                    val articles = databaseArticles.map {
+                        it.asDomainModel()
+                    }
+                    emit(Result.Success(articles))
+                } else {
+                    emit(Result.Failure("No articles found"))
+                }
+            }
+
         }
     }
         .flowOn(

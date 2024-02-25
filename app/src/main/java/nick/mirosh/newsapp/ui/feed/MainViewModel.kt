@@ -17,15 +17,20 @@ class MainViewModel @Inject constructor(
     @Universal private val newsRepository: NewsRepository,
 ) : ViewModel() {
 
-    private val _articles = MutableStateFlow<ArticlesUiState>(ArticlesUiState.Loading)
-    val articles = _articles.asStateFlow()
+    private val _newsFeedUiState = MutableStateFlow<ArticlesUiState>(ArticlesUiState.Loading)
+    val newsFeedUiState = _newsFeedUiState.asStateFlow()
 
     init {
+        //TODO don't reload this every time we land on the page
         viewModelScope.launch {
-            newsRepository.refreshNews().collect {
-                _articles.value = when (it) {
-                    is Result.Success ->
-                        ArticlesUiState.Success(it.data)
+            newsRepository.getNews("us").collect { result ->
+                _newsFeedUiState.value = when (result) {
+                    is Result.Success -> {
+                        val filteredArticles = result.data.filterNot {
+                            it.urlToImage.isEmpty()
+                        }
+                        ArticlesUiState.Success(filteredArticles)
+                    }
 
                     is Result.Failure ->
                         ArticlesUiState.Error

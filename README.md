@@ -9,3 +9,7 @@ To build the app:
 
 https://dribbble.com/shots/21035602-Wacana-News-Mobile-App
 
+// Search functionality
+
+
+https://chat.openai.com/share/e23b7ce1-1ed3-4861-b218-ad456491e6ad

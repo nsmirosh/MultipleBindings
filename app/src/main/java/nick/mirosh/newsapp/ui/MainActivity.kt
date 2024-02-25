@@ -87,9 +87,9 @@ fun BottomBar(navController: NavController) {
 }
 
 sealed class BottomBarItem(var title: String, var icon: ImageVector, var route: String) {
-
-    object Home : BottomBarItem("Home", Icons.Default.Home, "home")
-    object Favorites : BottomBarItem("Favorites", Icons.Default.Favorite, "favorites")
+    data object Home : BottomBarItem("Home", Icons.Default.Home, Feed.route)
+    data object Favorites :
+        BottomBarItem("Favorites", Icons.Default.Favorite, Details.routeWithArgs)
 }
 
 @Composable
@@ -126,20 +126,16 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 fun BottomNavGraph(paddingValues: PaddingValues, navController: NavHostController) {
     NavHost(navController = navController, startDestination = BottomBarItem.Home.route) {
         composable(route = BottomBarItem.Home.route) {
-            val viewModel = hiltViewModel<MainViewModel>()
             MainScreenContent(
                 modifier = Modifier.padding(paddingValues),
-                viewModel = viewModel,
+                viewModel = hiltViewModel<MainViewModel>(),
                 onClick = {
                     val encodedUrl =
                         URLEncoder.encode(it.url, StandardCharsets.UTF_8.toString())
-
                     navController.navigateSingleTopTo("${Details.route}/$encodedUrl")
 
-                },
-                onSavedArticlesClicked = {
-                    navController.navigateSingleTopTo(FavoriteArticles.route)
-                })
+                }
+            )
         }
         composable(route = BottomBarItem.Favorites.route) {
             val viewModel = hiltViewModel<FavoriteArticlesViewModel>()

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,8 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -29,16 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import nick.mirosh.newsapp.R
 import nick.mirosh.newsapp.domain.model.Article
 
 
@@ -48,50 +44,40 @@ import nick.mirosh.newsapp.domain.model.Article
 fun MainScreenContent(
     modifier: Modifier = Modifier,
     viewModel: MainViewModel = viewModel(),
-    onClick: (Article) -> Unit,
-    onSavedArticlesClicked: () -> Unit
+    onClick: (Article) -> Unit
 ) {
-    val uiState by viewModel.articles.collectAsStateWithLifecycle()
-
-    when (uiState) {
-        is ArticlesUiState.Success -> {
-            val articles = (uiState as ArticlesUiState.Success).articles
-            Scaffold(
-                content = {
-                    LazyColumn {
-                        items(articles.size) { index ->
-                            ArticleItem(articles[index], onClick, viewModel::onLikeClick)
-                        }
+    val uiState by viewModel.newsFeedUiState.collectAsStateWithLifecycle()
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        when (uiState) {
+            is ArticlesUiState.Success ->
+                LazyColumn {
+                    val articles = (uiState as ArticlesUiState.Success).articles
+                    items(articles.size) { index ->
+                        ArticleItem(articles[index], onClick, viewModel::onLikeClick)
                     }
-                },
-                floatingActionButton = {
-                    FloatingActionButton(
-                        onClick = onSavedArticlesClicked,
-                        modifier = Modifier.padding(bottom = 16.dp, end = 16.dp)
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(32.dp),
-                            imageVector = ImageVector.vectorResource(id = R.drawable.save),
-                            contentDescription = "Save"
-                        )
-                    }
-                },
+                }
 
-                floatingActionButtonPosition = FabPosition.End,
+            is ArticlesUiState.Error ->
+                Box {
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "Error loading articles",
+                    )
+                }
 
-                )
-
-        }
-
-        is ArticlesUiState.Error -> {
+            is ArticlesUiState.Loading ->
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Text(
+                        modifier = Modifier.align(Alignment.Center),
+                        text = "Loading articles...",
+                    )
+                }
 
         }
 
-        is ArticlesUiState.Loading -> {
-
-        }
     }
-
 }
 
 @Composable
@@ -138,7 +124,6 @@ fun ArticleItem(
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
 
-                Log.d("ArticleItem", "is article liked: ${article.liked}")
                 Icon(
                     imageVector = if (article.liked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
@@ -149,7 +134,6 @@ fun ArticleItem(
         }
     }
 }
-
 
 
 private fun mToast(context: Context) {
