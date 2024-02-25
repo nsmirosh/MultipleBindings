@@ -136,10 +136,9 @@ fun BottomNavGraph(paddingValues: PaddingValues, navController: NavHostControlle
             )
         }
         composable(route = FavoritesDestination.route) {
-            val viewModel = hiltViewModel<FavoriteArticlesViewModel>()
             FavoriteArticlesScreenContent(
                 modifier = Modifier.padding(paddingValues),
-                viewModel = viewModel
+                viewModel = hiltViewModel<FavoriteArticlesViewModel>()
             )
         }
         composable(
