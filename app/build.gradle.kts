@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "nick.mirosh.newsapp"
-        minSdk = 25
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"

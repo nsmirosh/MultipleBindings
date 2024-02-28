@@ -1,6 +1,7 @@
 package nick.mirosh.newsapp.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,37 +34,32 @@ import dagger.hilt.android.AndroidEntryPoint
 import nick.mirosh.newsapp.ui.details.DetailsScreenContent
 import nick.mirosh.newsapp.ui.favorite_articles.FavoriteArticlesScreenContent
 import nick.mirosh.newsapp.ui.favorite_articles.FavoriteArticlesViewModel
-import nick.mirosh.newsapp.ui.feed.MainScreenContent
-import nick.mirosh.newsapp.ui.feed.MainViewModel
+import nick.mirosh.newsapp.ui.feed.FeedScreen
+import nick.mirosh.newsapp.ui.feed.FeedViewModel
 import nick.mirosh.newsapp.ui.theme.NewsAppTheme
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
+private const val TAG = "MainActivity"
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             NewsAppTheme {
-                NewsFeedScreen()
+                val navController = rememberNavController()
+                Scaffold(bottomBar = {
+                    BottomBar(navController = navController)
+                }) { paddingValues ->
+                    BottomNavGraph(
+                        paddingValues = paddingValues,
+                        navController = navController
+                    )
+                }
             }
         }
     }
 }
-
-@Composable
-fun NewsFeedScreen() {
-    val navController = rememberNavController()
-    Scaffold(bottomBar = {
-        BottomBar(navController = navController)
-    }) { paddingValues ->
-        BottomNavGraph(
-            paddingValues = paddingValues,
-            navController = navController
-        )
-    }
-}
-
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -85,11 +81,6 @@ fun BottomBar(navController: NavController) {
     }
 }
 
-sealed class BottomBarItem(var title: String, var icon: ImageVector, var route: String) {
-    data object Home : BottomBarItem("Home", Icons.Default.Home, FeedDestination.route)
-    data object Favorites :
-        BottomBarItem("Favorites", Icons.Default.Favorite, FavoritesDestination.route)
-}
 
 @Composable
 fun RowScope.AddItem(
@@ -130,9 +121,9 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 fun BottomNavGraph(paddingValues: PaddingValues, navController: NavHostController) {
     NavHost(navController = navController, startDestination = BottomBarItem.Home.route) {
         composable(route = FeedDestination.route) {
-            MainScreenContent(
-                modifier = Modifier.padding(paddingValues),
-                viewModel = hiltViewModel<MainViewModel>(),
+            Log.d(TAG, "BottomNavGraph: MainScreenContent() called")
+            FeedScreen(
+                viewModel = hiltViewModel<FeedViewModel>(),
                 onClick = {
                     val encodedUrl =
                         URLEncoder.encode(it.url, StandardCharsets.UTF_8.toString())
@@ -159,11 +150,17 @@ fun BottomNavGraph(paddingValues: PaddingValues, navController: NavHostControlle
     }
 }
 
+sealed class BottomBarItem(var title: String, var icon: ImageVector, var route: String) {
+    data object Home : BottomBarItem("Home", Icons.Default.Home, FeedDestination.route)
+    data object Favorites :
+        BottomBarItem("Favorites", Icons.Default.Favorite, FavoritesDestination.route)
+}
+
 @Preview
 @Composable
 fun PreviewFeedScreen() {
     NewsAppTheme {
-        NewsFeedScreen()
+
     }
 }
 
