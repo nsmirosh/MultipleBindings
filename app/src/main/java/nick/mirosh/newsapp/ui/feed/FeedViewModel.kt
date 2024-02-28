@@ -62,31 +62,6 @@ class FeedViewModel @Inject constructor(
         _countryCode.value = newCountryCode
     }
 
-    init {
-        Log.d(TAG, "init() called")
-    }
-//    val newsFeedUiState = _newsFeedUiState.asStateFlow()
-
-//    init {
-//        //TODO don't reload this every time we land on the page
-//        viewModelScope.launch {
-//            getArticlesUseCase("us").collect { result ->
-//                _newsFeedUiState.value = when (result) {
-//                    is Result.Success -> {
-//                        val filteredArticles = result.data.filterNot {
-//                            it.urlToImage.isEmpty()
-//                        }
-//                        ArticlesUiState.Success(filteredArticles)
-//                    }
-//
-//                    is Result.Failure ->
-//                        ArticlesUiState.Error
-//                }
-//            }
-//        }
-//    }
-
-
     fun onLikeClick(article: Article) {
         viewModelScope.launch {
             updateArticleUseCase(article.copy(liked = !article.liked))
